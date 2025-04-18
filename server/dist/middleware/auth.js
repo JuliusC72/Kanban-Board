@@ -3,7 +3,8 @@ export const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if (!token) {
-        return res.status(401).json({ message: 'Unauthorized: No token provided' });
+        res.status(401).json({ message: 'Unauthorized: No token provided' });
+        return;
     }
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY || '');
@@ -11,6 +12,7 @@ export const authenticateToken = (req, res, next) => {
         next();
     }
     catch (error) {
-        return res.status(403).json({ message: 'Forbidden: Invalid token' });
+        res.status(403).json({ message: 'Forbidden: Invalid token' });
+        return;
     }
 };

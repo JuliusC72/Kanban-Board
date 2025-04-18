@@ -5,12 +5,13 @@ interface JwtPayload {
   username: string;
 }
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized: No token provided' });
+    res.status(401).json({ message: 'Unauthorized: No token provided' });
+    return;
   }
 
   try {
@@ -18,7 +19,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     req.user = { username: decoded.username };
     next();
   } catch (error) {
-    return res.status(403).json({ message: 'Forbidden: Invalid token' });
+    res.status(403).json({ message: 'Forbidden: Invalid token' });
+    return;
   }
 };
-
